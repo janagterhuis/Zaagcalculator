@@ -19,22 +19,33 @@ lengte.grid(column=3, row = 1,  padx=10, pady=10, columnspan=2)
 breedte.insert(0, "breedte ")
 lengte.insert(0, "lengte")
 
-def update_options(*args):
+def selected_soort(soort):
+    selected_soort.s = soort
+    print(soort)
+
+def selected_dikte(dikte):
+    selected_dikte.d = dikte
+
+    print(dikte)
+
+def bereken():
     # Create a database
     conn = sqlite3.connect('prijzenlijst.db')
 
     # Create cursor
     c = conn.cursor()
-    c.execute("SELECT dikte FROM plaatmateriaal WHERE soort = (?)", clicked_soort)
-    print("trigger")
+
+    c.execute("SELECT prijs FROM plaatmateriaal WHERE soort = 'Multiplex' AND dikte = ?", (selected_dikte.d))
+
+    prijs_record = c.fetchone()
+    print (prijs_record)
 
     # Commit changes
+
     conn.commit()
 
     # Close connection
     conn.close()
-
-def bereken():
     parameter1 = int(breedte.get())
     parameter2 = int(lengte.get())
     berekening = parameter1 * parameter2
@@ -69,26 +80,23 @@ print(soort_record)
 soorten = soort_record
 
 clicked_soort = StringVar()
-clicked_soort.set(soorten[0])
-clicked_soort.trace('w', update_options)
+clicked_soort.set("soort")
 
 
-
-drop = OptionMenu(root, clicked_soort, *soorten)
+drop = OptionMenu(root, clicked_soort, *soorten, command=selected_soort )
 drop.grid(column=5, row=1, columnspan=1)
 
-c.execute("SELECT dikte FROM plaatmateriaal WHERE soort = 'MDF' ORDER BY dikte DESC;")
+
+c.execute("SELECT dikte FROM plaatmateriaal ORDER BY dikte DESC;")
 global dikte_record
 dikte_record = list(set(c.fetchall()))
 print(dikte_record)
-print (sorted(dikte_record, key=str, reverse=True))
-
 
 diktes = dikte_record
 clicked_dikte = StringVar()
-clicked_dikte.set(18)
+clicked_dikte.set("dikte")
 
-drop = OptionMenu(root, clicked_dikte, *diktes)
+drop = OptionMenu(root, clicked_dikte, *diktes, command=selected_dikte)
 drop.grid(column=6, row=1, columnspan=1)
 
 # Commit changes
