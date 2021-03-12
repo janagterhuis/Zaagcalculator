@@ -35,8 +35,7 @@ def bereken():
     # Create cursor
     c = conn.cursor()
 
-    c.execute("SELECT prijs FROM plaatmateriaal WHERE soort = 'Multiplex' AND dikte = ?", (selected_dikte.d))
-
+    c.execute("SELECT prijs FROM plaatmateriaal WHERE soort = ? AND dikte = ?", (selected_soort.s[0], selected_dikte.d[0]))
     prijs_record = c.fetchone()
     print (prijs_record)
 
@@ -46,9 +45,10 @@ def bereken():
 
     # Close connection
     conn.close()
-    parameter1 = int(breedte.get())
-    parameter2 = int(lengte.get())
-    berekening = parameter1 * parameter2
+    parameter1 = float(int(breedte.get()))
+    parameter2 = float(int(lengte.get()))
+    parameter3 = float(int(prijs_record[0]))
+    berekening = float(parameter1 * parameter2 * parameter3)
     uitkomst = "De uitkomst is: " + str(berekening)
     antwoord = Label(
         root,
